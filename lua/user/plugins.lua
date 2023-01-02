@@ -60,6 +60,21 @@ return packer.startup(function(use)
   use { "lukas-reineke/indent-blankline.nvim", commit = "db7cbcb40cc00fc5d6074d7569fb37197705e7f6" }
   use { "goolord/alpha-nvim", commit = "0bb6fc0646bcd1cdb4639737a1cee8d6e08bcc31" }
 
+  -- Highlight
+  use {"inkarkat/vim-mark", requires = {"vim-scripts/ingo-library"}}
+  use {"norcalli/nvim-colorizer.lua"}
+
+  -- Diff view
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+
+  -- Search
+  use {"dyng/ctrlsf.vim"}
+  use {"easymotion/vim-easymotion"}
+
+  -- Tags
+  use {"ludovicchabant/vim-gutentags"}
+  use {"liuchengxu/vista.vim"}
+
   -- Colorschemes
   use { "folke/tokyonight.nvim", commit = "66bfc2e8f754869c7b651f3f47a2ee56ae557764" }
   use { "lunarvim/darkplus.nvim", commit = "13ef9daad28d3cf6c5e793acfc16ddbf456e1c83" }
@@ -95,6 +110,8 @@ return packer.startup(function(use)
 
   -- Git
   use { "lewis6991/gitsigns.nvim", commit = "f98c85e7c3d65a51f45863a34feb4849c82f240f" }
+  use { "junegunn/gv.vim", requires = {{ 'tpope/vim-fugitive'}}}
+
 
   -- DAP
   use { "mfussenegger/nvim-dap", commit = "6b12294a57001d994022df8acbe2ef7327d30587" }
