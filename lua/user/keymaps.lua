@@ -50,6 +50,20 @@ keymap("i", "jk", "<ESC>", opts)
 keymap("v", "<", "<gv", opts)
 keymap("v", ">", ">gv", opts)
 
+-- buffers
+keymap('n', "<leader>o", ":only<cr>", opts)
+keymap('n', "<leader>w", ":w!<cr>", opts)
+keymap('n', "<leader>q", ":q!<cr>", opts)
+keymap('n', "<leader>x", ":x!<cr>", opts)
+keymap('n', "<leader>-", ":sp<cr>", opts)
+keymap('n', "<leader><Bslash>", ":vs<cr>", opts)
+keymap('n', "<leader>t", ":tabedit<cr>", opts)
+
+-- highlights
+keymap('n', "zz", ":%s/\\s\\+$// <CR>", opts)
+
+
+
 -- Plugins --
 
 -- NvimTree
@@ -57,12 +71,23 @@ keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 
 -- Telescope
 keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
-keymap("n", "<leader>ft", ":Telescope live_grep<CR>", opts)
+keymap("n", "<leader>fs", ":Telescope live_grep<CR>", opts)
 keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
 keymap("n", "<leader>fb", ":Telescope buffers<CR>", opts)
+keymap("n", "<leader>fr", ":Telescope oldfiles<CR>", opts)
+keymap("n", "<leader>fc", ":Telescope commands<CR>", opts)
+keymap("n", "<leader>fg", ":Telescope tags<CR>", opts)
+keymap("n", "<leader>ft", ":Telescope current_buffer_tags<CR>", opts)
+keymap("n", "<leader>fe", ":Telescope <CR>", opts)
+keymap("n", "<leader>fd", ":Telescope diagnostics<CR>", opts)
+keymap("n", "<leader>fh", ":Telescope help_tags<CR>", opts)
 
--- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+-- ToggleTerm
+keymap("n", "gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "tt", ":ToggleTerm <CR>", opts)
+
+-- vim-mark
+keymap("n", "mm", ":MarkClear <CR>", opts)
 
 -- Comment
 keymap("n", "<leader>cc", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
@@ -80,4 +105,14 @@ keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
 
 -- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
+keymap("n", "ff", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
+keymap("n", "<C-f>", ":ClangdSwitchSourceHeader <cr>", opts)
+
+-- ctrlsf
+keymap("n", "<leader>k", "<plug>CtrlSFCwordPath <cr>", opts)
+keymap("n", "<leader>s", "<plug>CtrlSFPrompt ")
+keymap("n", "cc", ":CtrlSFToggle<cr>", opts)
+
+-- Vista
+keymap("n", "tb", ":Vista!! <cr>", opts)
+
