@@ -62,29 +62,23 @@ keymap('n', "<leader>t", ":tabedit<cr>", opts)
 -- highlights
 keymap('n', "zz", ":%s/\\s\\+$// <CR>", opts)
 
-
-
 -- Plugins --
 
 -- NvimTree
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 
 -- Telescope
-keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
-keymap("n", "<leader>fs", ":Telescope live_grep<CR>", opts)
-keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
 keymap("n", "<leader>fb", ":Telescope buffers<CR>", opts)
-keymap("n", "<leader>fr", ":Telescope oldfiles<CR>", opts)
 keymap("n", "<leader>fc", ":Telescope commands<CR>", opts)
-keymap("n", "<leader>fg", ":Telescope tags<CR>", opts)
-keymap("n", "<leader>ft", ":Telescope current_buffer_tags<CR>", opts)
-keymap("n", "<leader>fe", ":Telescope <CR>", opts)
 keymap("n", "<leader>fd", ":Telescope diagnostics<CR>", opts)
+keymap("n", "<leader>fe", ":Telescope <CR>", opts)
+keymap("n", "<leader>ff", ":Telescope find_files<CR>", opts)
+keymap("n", "<leader>fg", ":Telescope live_grep<CR>", opts)
 keymap("n", "<leader>fh", ":Telescope help_tags<CR>", opts)
-
--- ToggleTerm
-keymap("n", "gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
-keymap("n", "tt", ":ToggleTerm <CR>", opts)
+keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
+keymap("n", "<leader>fr", ":Telescope oldfiles<CR>", opts)
+keymap("n", "<leader>ft", ":Telescope tags<CR>", opts)
+keymap("n", "<leader>fu", ":Telescope current_buffer_tags<CR>", opts)
 
 -- vim-mark
 keymap("n", "mm", ":MarkClear <CR>", opts)
