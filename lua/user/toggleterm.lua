@@ -44,7 +44,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	pattern = { "python"},
 	callback = function()
     cmd = ":TermExec cmd='python " .. vim.fn.expand("%") .. " ' <cr> "
-    print(cmd)
     vim.keymap.set("n", "P", cmd, {noremap = true, buffer = true})
 	end,
 })
@@ -53,7 +52,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 	pattern = { "sh"},
 	callback = function()
     cmd = ":TermExec cmd='bash " .. vim.fn.expand("%") .. " ' <cr> "
-    print(cmd)
     vim.keymap.set("n", "B", cmd, {noremap = true, buffer = true})
 	end,
 })
