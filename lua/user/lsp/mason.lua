@@ -9,6 +9,7 @@ local servers = {
 	"yamlls",
 	"clangd",
 	"grammarly",
+	"gopls",
 }
 
 local settings = {
