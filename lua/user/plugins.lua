@@ -72,6 +72,7 @@ return packer.startup(function(use)
   -- Search
   use {"dyng/ctrlsf.vim"}
   use {"easymotion/vim-easymotion"}
+  use { "Yggdroot/LeaderF" }
 
   -- Tags
   use {"ludovicchabant/vim-gutentags"}
