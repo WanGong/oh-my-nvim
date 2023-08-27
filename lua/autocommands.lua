@@ -2,8 +2,8 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
   callback = function()
     vim.cmd [[
-      nnoremap <silent> <buffer> q :close<CR> 
-      set nobuflisted 
+      nnoremap <silent> <buffer> q :close<CR>
+      set nobuflisted
     ]]
   end,
 })
@@ -51,3 +51,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
     end
   end,
 })
+
+-- https://www.reddit.com/r/vim/comments/ex1vlv/how_do_i_get_vim_to_preserve_the_cursor_position/?rdt=47940
+vim.cmd "autocmd BufLeave,BufWinLeave * silent! mkview"
+vim.cmd "autocmd BufReadPost * silent! loadview"
