@@ -72,3 +72,9 @@ function M.config()
 end
 
 return M
+
+-- Add "'detach': 1," to the build_default_job_options in autoload/gutentags.vim
+-- ref to:
+-- https://github.com/ludovicchabant/vim-gutentags/issues/178
+-- https://github.com/ludovicchabant/vim-gutentags/issues/167
+-- https://github.com/ludovicchabant/vim-gutentags/issues/168
