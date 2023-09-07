@@ -93,13 +93,10 @@ keymap("n", "zz", ":%s/\\s\\+$// <CR>", opts)
 -- vim-mark
 keymap("n", "mm", ":MarkClear <CR>", opts)
 
--- ctrlsf
-keymap("n", "<leader>k", "<plug>CtrlSFCwordPath <cr>", opts)
-keymap("n", "<leader>s", "<plug>CtrlSFPrompt ")
-keymap("n", "cc", ":CtrlSFToggle<cr>", opts)
-
 -- leaderf
 keymap("n", "<leader>fb", ':<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>', opts)
 keymap("n", "<leader>fr", ':<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>', opts)
 keymap("n", "<leader>ft", ':<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>', opts)
 keymap("n", "<leader>fl", ':<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>', opts)
+keymap("n", "<leader>k", ":Leaderf! rg --no-auto-preview <C-R><C-W> <CR>", opts)
+keymap("n", "<leader>s", ":Leaderf! rg --no-auto-preview ", opts)
