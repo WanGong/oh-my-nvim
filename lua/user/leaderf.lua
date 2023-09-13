@@ -1,6 +1,6 @@
 local M = {
   "Yggdroot/LeaderF",
-  event = "VeryLazy",
+  lazy = false,
 }
 
 function M.config()
