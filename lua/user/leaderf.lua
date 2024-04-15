@@ -3,7 +3,6 @@ local M = {
   lazy = false,
 }
 
-function M.config()
-end
+function M.config() end
 
 return M
