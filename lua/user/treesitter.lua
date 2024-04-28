@@ -1,6 +1,7 @@
 local M = {
   "nvim-treesitter/nvim-treesitter",
-  event = "BufReadPost",
+  event = { "BufReadPost", "BufNewFile" },
+  build = ":TSUpdate",
   dependencies = {
     {
       "JoosepAlviste/nvim-ts-context-commentstring",
@@ -14,11 +15,11 @@ local M = {
 }
 
 function M.config()
-  local treesitter = require "nvim-treesitter"
   local configs = require "nvim-treesitter.configs"
 
   configs.setup {
     ensure_installed = "all", -- one of "all" or a list of languages
+    auto_install = true,
     ignore_install = { "" }, -- List of parsers to ignore installing
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
 

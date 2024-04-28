@@ -5,7 +5,15 @@ local opts = { silent = true }
 
 --Remap space as leader key
 keymap("", "<Space>", "<Nop>", opts)
-vim.g.mapleader = " "
+
+-- Set <space> as the leader key
+-- See `:help mapleader`
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+-- Set to true if you have a Nerd Font installed
+vim.g.have_nerd_font = true
 
 -- Modes
 --   normal_mode = "n",
@@ -14,6 +22,36 @@ vim.g.mapleader = " "
 --   visual_block_mode = "x",
 --   term_mode = "t",
 --   command_mode = "c",
+
+-- clear highlights on search when pressing <Esc> in normal mode
+-- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
+-- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
+-- is not what someone will guess without a bit more experience.
+--
+-- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
+-- or just use <C-\><C-n> to exit terminal mode
+-- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.api.nvim_set_keymap('t', '<C-q>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- TIP: Disable arrow keys in normal mode
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+
+-- mousemenu configure
+vim.cmd [[:amenu 10.100 mousemenu.Goto\ Definition <cmd>lua vim.lsp.buf.definition()<CR>]]
+vim.cmd [[:amenu 10.110 mousemenu.References <cmd>lua vim.lsp.buf.references()<CR>]]
+-- vim.keymap.set("n", "<RightMouse>", "<cmd>:popup mousemenu<CR>")
+vim.keymap.set("n", "<Leader><Tab>", "<cmd>:popup mousemenu<CR>")
 
 -- Normal --
 -- Better window navigation
@@ -98,5 +136,5 @@ keymap("n", "<leader>fb", ':<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>',
 keymap("n", "<leader>fr", ':<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>', opts)
 keymap("n", "<leader>ft", ':<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>', opts)
 keymap("n", "<leader>fl", ':<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>', opts)
-keymap("n", "<leader>k", ":Leaderf! rg --stayOpen --no-auto-preview <C-R><C-W> <CR>", opts)
-keymap("n", "<leader>s", ":Leaderf! rg --stayOpen --no-auto-preview ", opts)
+keymap("n", "<leader>fk", ":Leaderf! rg --stayOpen --no-auto-preview <C-R><C-W> <CR>", opts)
+keymap("n", "<leader>fs", ":Leaderf! rg --stayOpen --no-auto-preview ", opts)

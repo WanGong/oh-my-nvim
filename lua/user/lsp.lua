@@ -1,13 +1,43 @@
+-- Brief aside: **What is LSP?**
+--
+-- LSP is an initialism you've probably heard, but might not understand what it is.
+--
+-- LSP stands for Language Server Protocol. It's a protocol that helps editors
+-- and language tooling communicate in a standardized fashion.
+--
+-- In general, you have a "server" which is some tool built to understand a particular
+-- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
+-- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
+-- processes that communicate with some "client" - in this case, Neovim!
+--
+-- LSP provides Neovim with features like:
+--  - Go to definition
+--  - Find references
+--  - Autocompletion
+--  - Symbol Search
+--  - and more!
+--
+-- If you're wondering about lsp vs treesitter, you can check out the wonderfully
+-- and elegantly composed help section, `:help lsp-vs-treesitter`
+
 local M = {
   "neovim/nvim-lspconfig",
   lazy = false,
-  event = { "BufReadPre" },
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     {
       "hrsh7th/cmp-nvim-lsp",
     },
+    {
+      "folke/neodev.nvim",
+    },
   },
 }
+
+M.toggle_inlay_hints = function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
+end
 
 function M.config()
   local cmp_nvim_lsp = require "cmp_nvim_lsp"
@@ -36,12 +66,19 @@ function M.config()
   end
 
   local lspconfig = require "lspconfig"
+  local icons = require "settings.icons"
+
   local on_attach = function(client, bufnr)
     lsp_keymaps(bufnr)
     require("illuminate").on_attach(client)
+
+    if client.supports_method "textDocument/inlayHint" then
+      vim.lsp.inlay_hint.enable(bufnr, true)
+    end
   end
 
-  for _, server in pairs(require("utils").servers) do
+  local servers = require "user.lspsettings.enabled_servers"
+  for _, server in pairs(servers) do
     Opts = {
       on_attach = on_attach,
       capabilities = capabilities,
@@ -49,9 +86,13 @@ function M.config()
 
     server = vim.split(server, "@")[1]
 
-    local require_ok, conf_opts = pcall(require, "settings." .. server)
+    local require_ok, conf_opts = pcall(require, "user.lspsettings." .. server)
     if require_ok then
       Opts = vim.tbl_deep_extend("force", conf_opts, Opts)
+    end
+
+    if server == "lua_ls" then
+      require("neodev").setup {}
     end
 
     lspconfig[server].setup(Opts)
@@ -98,6 +139,8 @@ function M.config()
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
     border = "rounded",
   })
+
+  require("lspconfig.ui.windows").default_options.border = "rounded"
 end
 
 return M

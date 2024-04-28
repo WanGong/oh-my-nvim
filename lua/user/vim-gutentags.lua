@@ -1,5 +1,5 @@
 local M = {
-  "ludovicchabant/vim-gutentags",
+  "WanGong/vim-gutentags",
   event = "VeryLazy",
 }
 

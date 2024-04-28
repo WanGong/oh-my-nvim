@@ -1,5 +1,25 @@
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  callback = function()
+    vim.cmd "set formatoptions-=cro"
+  end,
+})
+
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "qf", "help", "man", "lspinfo", "spectre_panel" },
+  pattern = {
+    "netrw",
+    "Jaq",
+    "qf",
+    "git",
+    "help",
+    "man",
+    "lspinfo",
+    "oil",
+    "spectre_panel",
+    "lir",
+    "DressingSelect",
+    "tsplayground",
+    "",
+  },
   callback = function()
     vim.cmd [[
       nnoremap <silent> <buffer> q :close<CR>
@@ -8,8 +28,14 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
+  callback = function()
+    vim.cmd "quit"
+  end,
+})
+
 vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "gitcommit", "markdown" },
+  pattern = { "gitcommit", "markdown", "NeogitCommitMessage"  },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
@@ -55,3 +81,25 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 -- https://www.reddit.com/r/vim/comments/ex1vlv/how_do_i_get_vim_to_preserve_the_cursor_position/?rdt=47940
 vim.cmd "autocmd BufLeave,BufWinLeave * silent! mkview"
 vim.cmd "autocmd BufReadPost * silent! loadview"
+
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  pattern = { "*" },
+  callback = function()
+    vim.cmd "checktime"
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "CursorHold" }, {
+  callback = function()
+    local status_ok, luasnip = pcall(require, "luasnip")
+    if not status_ok then
+      return
+    end
+    if luasnip.expand_or_jumpable() then
+      -- ask maintainer for option to make this silent
+      -- luasnip.unlink_current()
+      vim.cmd [[silent! lua require("luasnip").unlink_current()]]
+    end
+  end,
+})
