@@ -14,13 +14,8 @@ function M.config()
   harpoon:setup()
   -- REQUIRED
 
-  keymap("n", "<leader>ha", function() harpoon:list():add() end)
-  keymap("n", "<leader>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-end
-
-function M.mark_file()
-  require("harpoon.mark").add_file()
-  vim.notify "󱡅  marked file"
+  keymap("n", "<leader>ha", function() harpoon:list():add() end, opts)
+  keymap("n", "<leader>hl", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, opts)
 end
 
 return M
