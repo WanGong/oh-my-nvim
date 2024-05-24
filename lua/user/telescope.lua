@@ -10,6 +10,7 @@ local M = {
 function M.config()
   local wk = require "which-key"
   wk.register {
+    ["<leader>T"] = { "<cmd>Telescope<cr>", "Find" },
     ["<leader>sb"] = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
     -- ["<leader>sb"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
     ["<leader>sc"] = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
