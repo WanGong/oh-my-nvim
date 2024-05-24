@@ -45,7 +45,7 @@ vim.opt.linebreak = true
 vim.opt.breakindent = true                      -- Enable break indent
 vim.opt.list = true                             -- Sets how neovim will display certain whitespace characters in the editor. see :help 'list', :help 'listchars'
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-vim.opt.inccommand = 'split'                    -- Preview substitutions live, as you type!
+vim.opt.inccommand = 'nosplit'                  -- Preview substitutions live, as you type!
 
 vim.opt.tags = "tags;/"
 vim.opt.spell = true
