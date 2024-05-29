@@ -67,11 +67,6 @@ local function on_attach(bufnr)
   vim.keymap.set("n", "<2-LeftMouse>", api.node.open.edit, opts "Open")
   vim.keymap.set("n", "<2-RightMouse>", api.tree.change_root_to_node, opts "CD")
   -- END_DEFAULT_ON_ATTACH
-
-  -- Mappings migrated from view.mappings.list
-  --
-  -- You will need to insert "your code goes here" for any mappings with a custom action_cb
-  vim.keymap.set("n", "v", api.node.open.vertical, opts "Open: Vertical Split")
 end
 
 function M.config()
