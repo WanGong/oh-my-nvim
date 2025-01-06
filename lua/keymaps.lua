@@ -133,11 +133,3 @@ keymap("n", "zz", ":%s/\\s\\+$// <CR>", opts)
 
 -- vim-mark
 keymap("n", "mm", ":MarkClear <CR>", opts)
-
--- leaderf
-keymap("n", "<leader>fb", ':<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>', opts)
-keymap("n", "<leader>fr", ':<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>', opts)
-keymap("n", "<leader>ft", ':<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>', opts)
-keymap("n", "<leader>fl", ':<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>', opts)
-keymap("n", "<leader>fk", ":Leaderf! rg --stayOpen --no-auto-preview <C-R><C-W> <CR>", opts)
-keymap("n", "<leader>fs", ":Leaderf! rg --stayOpen --no-auto-preview ", opts)

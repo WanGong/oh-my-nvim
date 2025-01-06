@@ -44,15 +44,19 @@ local settings = {
 function M.config()
   require("mason").setup(settings)
 
-  local ensure_installed = require "user.lspsettings.enabled_servers"
-
+  local lsp_ensure_installed = require "user.lspsettings.enabled_servers"
   require("mason-lspconfig").setup {
-    ensure_installed = ensure_installed,
+    ensure_installed = lsp_ensure_installed,
+    automatic_installation = true,
+  }
+
+  require("mason-null-ls").setup {
+    ensure_installed = nil,
     automatic_installation = true,
   }
 
   require("mason-tool-installer").setup {
-    ensure_installed = ensure_installed,
+    ensure_installed = lsp_ensure_installed,
     run_on_start = true,
   }
 

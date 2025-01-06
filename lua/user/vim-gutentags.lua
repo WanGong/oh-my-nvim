@@ -73,13 +73,14 @@ function M.config()
   vim.g.gutentags_enabled = 0
 
   local wk = require "which-key"
-  wk.register {
-    ["<leader>gg"] = {
+  wk.add {
+    {
+      "<leader>gg",
       function()
         vim.g.gutentags_enabled = 1 - vim.g.gutentags_enabled
         print(string.format("gutentags_enabled: %d", vim.g.gutentags_enabled))
       end,
-      "Togger gutentags",
+      desc = "Togger gutentags",
     },
   }
 end

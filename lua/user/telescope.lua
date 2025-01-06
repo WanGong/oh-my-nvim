@@ -9,18 +9,17 @@ local M = {
 
 function M.config()
   local wk = require "which-key"
-  wk.register {
-    ["<leader>T"] = { "<cmd>Telescope<cr>", "Find" },
-    ["<leader>sb"] = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
-    -- ["<leader>sb"] = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    ["<leader>sc"] = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
-    ["<leader>sf"] = { "<cmd>Telescope find_files<cr>", "Find files" },
-    ["<leader>sp"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
-    ["<leader>sg"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
-    ["<leader>ss"] = { "<cmd>Telescope live_grep<cr>", "Find Text" },
-    ["<leader>sh"] = { "<cmd>Telescope help_tags<cr>", "Help" },
-    ["<leader>sl"] = { "<cmd>Telescope resume<cr>", "Last Search" },
-    ["<leader>sr"] = { "<cmd>Telescope oldfiles<cr>", "Recent File" },
+  wk.add {
+    { "<leader>T", "<cmd>Telescope<cr>", desc = "Find" },
+    { "<leader>sb", "<cmd>Telescope buffers previewer=false<cr>", desc = "Find" },
+    { "<leader>sc", "<cmd>Telescope colorscheme<cr>", desc = "Colorscheme" },
+    { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+    { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Find Text" },
+    { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
+    { "<leader>sl", "<cmd>Telescope resume<cr>", desc = "Last Search" },
+    { "<leader>sp", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
+    { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Recent File" },
+    { "<leader>ss", "<cmd>Telescope live_grep<cr>", desc = "Find Text" },
   }
 
   local icons = require "settings.icons"

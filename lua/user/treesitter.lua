@@ -22,6 +22,7 @@ function M.config()
     auto_install = true,
     ignore_install = { "" }, -- List of parsers to ignore installing
     sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+    prefer_git = true, -- install languages synchronously (only applied to `ensure_installed`)
 
     highlight = {
       enable = true, -- false will disable the whole extension
