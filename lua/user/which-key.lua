@@ -11,6 +11,41 @@ local M = {
 function M.config()
   local which_key = require "which-key"
 
+  which_key.setup {
+    plugins = {
+      marks = true,
+      registers = true,
+      spelling = {
+        enabled = true,
+        suggestions = 20,
+      },
+      presets = {
+        operators = false,
+        motions = false,
+        text_objects = true,
+        windows = false,
+        nav = false,
+        z = true,
+        g = false,
+      },
+    },
+    win = {
+      border = "rounded",
+      padding = { 1, 1, 1, 1 },
+    },
+    show_help = false,
+    show_keys = false,
+    disable = {
+      buftypes = {},
+      filetypes = { "TelescopePrompt" },
+    },
+  }
+
+  local opts = {
+    mode = "n", -- NORMAL mode
+    prefix = "<leader>",
+  }
+
   local mappings = {
     { "<leader>;", "<cmd>tabnew | terminal<CR>", desc = "Term" },
     -- { "<leader>T", group = "Treesitter" },
@@ -30,42 +65,6 @@ function M.config()
     -- { "<leader>q", "<cmd>confirm q<CR>", desc = "Quit" },
     -- { "<leader>t", group = "Test" },
     { "<leader>v", "<cmd>vsplit<CR>", desc = "Split" },
-  }
-
-  which_key.setup {
-    plugins = {
-      marks = true,
-      registers = true,
-      spelling = {
-        enabled = true,
-        suggestions = 20,
-      },
-      presets = {
-        operators = false,
-        motions = false,
-        text_objects = true,
-        windows = false,
-        nav = false,
-        z = true,
-        g = false,
-      },
-    },
-    win= {
-      border = "rounded",
-      position = "bottom",
-      padding = { 2, 2, 2, 2 },
-    },
-    show_help = false,
-    show_keys = false,
-    disable = {
-      buftypes = {},
-      filetypes = { "TelescopePrompt" },
-    },
-  }
-
-  local opts = {
-    mode = "n", -- NORMAL mode
-    prefix = "<leader>",
   }
 
   which_key.add(mappings, opts)
