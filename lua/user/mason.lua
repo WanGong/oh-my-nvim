@@ -50,6 +50,7 @@ function M.config()
     automatic_installation = true,
   }
 
+  -- put all to none-ls, ref to: https://github.com/jay-babu/mason-null-ls.nvim?tab=readme-ov-file#primary-source-of-truth-is-null-ls
   require("mason-null-ls").setup {
     ensure_installed = nil,
     automatic_installation = true,
