@@ -82,6 +82,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
 vim.cmd "autocmd BufLeave,BufWinLeave * silent! mkview"
 vim.cmd "autocmd BufReadPost * silent! loadview"
 
+vim.cmd "autocmd BufNewFile,BufRead *.JenkinsFile,*.jenkinsFile,*.Jenkinsfile,*.jenkinsfile,Jenkinsfile.* set syntax=groovy"
 
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
   pattern = { "*" },

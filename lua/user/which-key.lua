@@ -12,6 +12,7 @@ function M.config()
   local which_key = require "which-key"
 
   which_key.setup {
+    delay = 1500,
     plugins = {
       marks = true,
       registers = true,
