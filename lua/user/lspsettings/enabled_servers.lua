@@ -5,7 +5,7 @@ return {
   "dockerls",
   "eslint",
   "gopls",
-  "grammarly",
+  -- "grammarly",
   "html",
   "jsonls",
   "lua_ls",
