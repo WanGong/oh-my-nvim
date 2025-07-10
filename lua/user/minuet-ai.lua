@@ -74,16 +74,16 @@ function M.config()
           auto_trigger_ignore_ft = {},
           keymap = {
               -- accept whole completion
-              accept = '<A-cr>',
+              accept = '<leader><cr>',
               -- accept one line
               accept_line = '<A-l>',
               -- accept n lines (prompts for number)
               -- e.g. "A-z 2 CR" will accept 2 lines
               accept_n_lines = '<A-z>',
               -- Cycle to prev completion item, or manually invoke completion
-              prev = '<A-[>',
+              prev = '<leader>[',
               -- Cycle to next completion item, or manually invoke completion
-              next = '<A-]>',
+              next = '<leader>]',
               dismiss = '<A-e>',
           },
           -- Whether show virtual text suggestion when the completion menu
