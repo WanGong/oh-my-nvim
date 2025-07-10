@@ -131,6 +131,11 @@ function M.config()
           vim_item.kind_hl_group = "CmpItemKindTabnine"
         end
 
+        if entry.source.name == "minuet" then
+          vim_item.kind = ''
+          vim_item.menu = ''
+        end
+
         return vim_item
       end,
     },
@@ -144,6 +149,7 @@ function M.config()
       { name = "path" },
       { name = "calc" },
       { name = "emoji" },
+      { name = "minuet" },
     },
     confirm_opts = {
       behavior = cmp.ConfirmBehavior.Replace,
