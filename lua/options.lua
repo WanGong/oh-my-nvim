@@ -54,5 +54,3 @@ vim.opt.spell = true
 vim.g.Lf_ShortcutF = "<C-P>"
 vim.g.Lf_PreviewInPopup = 1
 
-vim.g.python3_host_prog = '/usr/bin/python3'
-vim.g.python2_host_prog = '/usr/bin/python2'
