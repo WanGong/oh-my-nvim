@@ -1,3 +1,4 @@
+require "pyvenv"
 require "options"
 require "keymaps"
 require "Lazy"
