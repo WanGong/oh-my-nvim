@@ -1,15 +1,6 @@
 local M = {
   "windwp/nvim-autopairs",
   event = "InsertEnter",
-  dependencies = {
-    {
-      "hrsh7th/nvim-cmp",
-      event = {
-        "InsertEnter",
-        "CmdlineEnter",
-      },
-    },
-  },
 }
 
 function M.config()
@@ -33,11 +24,7 @@ function M.config()
       highlight_grey = "LineNr",
     },
   }
-
-  local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-  local cmp = require "cmp"
-
-  cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done {})
+  -- brackets after accepting a function completion are added by blink.cmp (completion.accept.auto_brackets)
 end
 
 return M
