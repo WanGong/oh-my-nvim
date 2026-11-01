@@ -4,7 +4,8 @@ local M = {
 }
 
 function M.config()
-  vim.keymap.set('', 'tb', ":Vista!!<CR>")
+  -- normal mode only: in operator-pending mode `dtb` (delete till "b") must keep working
+  vim.keymap.set('n', 'tb', "<cmd>Vista!!<CR>", { desc = "Toggle Vista" })
 end
 
 return M
