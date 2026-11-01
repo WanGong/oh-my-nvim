@@ -3,16 +3,12 @@ local M = {
   lazy = true,
   dependencies = {
     { 'nvim-lua/plenary.nvim' },
-
-    -- optional, if you are using virtual-text frontend, nvim-cmp is not required.
-    { 'hrsh7th/nvim-cmp' },
-
-    -- optional, if you are using virtual-text frontend, blink is not required.
-    -- { 'Saghen/blink.cmp' },
   }
 }
 
 function M.config()
+    -- without a local ollama every auto-triggered request fails with a curl error notification
+    local has_ollama = vim.fn.executable 'ollama' == 1
 
     require('minuet').setup {
         provider = 'openai_fim_compatible',
@@ -38,10 +34,10 @@ function M.config()
       -- always be enabled when invoked manually. You can use the command
       -- `Minuet cmp/blink toggle` to toggle this option.
       cmp = {
-          enable_auto_complete = true,
+          enable_auto_complete = false,
       },
       blink = {
-          enable_auto_complete = false,
+          enable_auto_complete = has_ollama,
       },
 
       -- LSP is recommended only for built-in completion. If you are using
@@ -67,23 +63,25 @@ function M.config()
       --     -- Specify the filetypes to enable automatic virtual text completion,
       --     -- e.g., { 'python', 'lua' }. Note that you can still invoke manual
       --     -- completion even if the filetype is not on your auto_trigger_ft list.
-          auto_trigger_ft = {'*'},
+          auto_trigger_ft = has_ollama and {'*'} or {},
       --     -- specify file types where automatic virtual text completion should be
       --     -- disabled. This option is useful when auto-completion is enabled for
       --     -- all file types i.e., when auto_trigger_ft = { '*' }
           auto_trigger_ignore_ft = {},
+          -- insert-mode maps: never start them with <leader> (space), with 'timeout' off
+          -- every typed space would wait for the next key
           keymap = {
               -- accept whole completion
-              accept = '<leader><cr>',
+              accept = '<A-A>',
               -- accept one line
               accept_line = '<A-l>',
               -- accept n lines (prompts for number)
               -- e.g. "A-z 2 CR" will accept 2 lines
               accept_n_lines = '<A-z>',
               -- Cycle to prev completion item, or manually invoke completion
-              prev = '<leader>[',
+              prev = '<A-[>',
               -- Cycle to next completion item, or manually invoke completion
-              next = '<leader>]',
+              next = '<A-]>',
               dismiss = '<A-e>',
           },
           -- Whether show virtual text suggestion when the completion menu
@@ -156,43 +154,8 @@ function M.config()
       -- proxy port to use
       proxy = nil,
 
-      -- see the documentation in the `Prompt` section
-      default_system = {
-          template = '...',
-          prompt = '...',
-          guidelines = '...',
-          n_completion_template = '...',
-      },
-
-      default_system_prefix_first = {
-          template = '...',
-          prompt = '...',
-          guidelines = '...',
-          n_completion_template = '...',
-      },
-
-      default_fim_template = {
-          prompt = '...',
-          suffix = '...',
-      },
-
-      default_few_shots = { '...' },
-      default_chat_input = { '...' },
-      default_few_shots_prefix_first = { '...' },
-      default_chat_input_prefix_first = { '...' },
       -- Config options for `Minuet change_preset` command
       presets = {}
-    }
-
-    require('cmp').setup {
-        -- Add sources in the cmp.lua file
-        performance = {
-            -- It is recommended to increase the timeout duration due to
-            -- the typically slower response speed of LLMs compared to
-            -- other completion sources. This is not needed when you only
-            -- need manual completion.
-            fetching_timeout = 2000,
-        }
     }
 end
 
