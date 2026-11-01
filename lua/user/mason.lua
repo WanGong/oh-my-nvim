@@ -9,21 +9,15 @@
 --  You can press `g?` for help in this menu.
 
 local M = {
-  "williamboman/mason.nvim",
+  "mason-org/mason.nvim",
   cmd = "Mason",
   event = "BufReadPre",
   dependencies = {
     {
-      "williamboman/mason-lspconfig.nvim",
-    },
-    {
-      "jay-babu/mason-null-ls.nvim",
+      "mason-org/mason-lspconfig.nvim",
     },
     {
       "jay-babu/mason-nvim-dap.nvim",
-    },
-    {
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
   },
 }
@@ -42,43 +36,54 @@ local settings = {
   PATH = "prepend", -- "skip" seems to cause the spawning error
 }
 
+-- formatters and linters run by conform.nvim / nvim-lint (mason package names)
+M.tools = {
+  "clang-format",
+  "cpplint",
+  "golangci-lint",
+  "google-java-format",
+  "hadolint",
+  "isort",
+  "markdownlint",
+  "prettier",
+  "shellcheck", -- also used by bashls for diagnostics
+  "stylua",
+}
+
+local function ensure_tools()
+  local registry = require "mason-registry"
+  registry.refresh(function()
+    for _, name in ipairs(M.tools) do
+      local ok, pkg = pcall(registry.get_package, name)
+      if ok and not pkg:is_installed() and not pkg:is_installing() then
+        vim.notify("mason: installing " .. name)
+        pkg:install()
+      end
+    end
+  end)
+end
+
 function M.config()
   require("mason").setup(settings)
 
   local lsp_ensure_installed = require "user.lspsettings.enabled_servers"
   require("mason-lspconfig").setup {
     ensure_installed = lsp_ensure_installed,
-    automatic_installation = true,
+    automatic_enable = { exclude = { "stylua" } }, -- stylua runs as a formatter through conform
   }
 
-  -- put all to none-ls, ref to: https://github.com/jay-babu/mason-null-ls.nvim?tab=readme-ov-file#primary-source-of-truth-is-null-ls
-  require("mason-null-ls").setup {
-    ensure_installed = nil,
-    automatic_installation = true,
+  ensure_tools()
+
+  require("mason-nvim-dap").setup {
+    ensure_installed = { "python", "codelldb" },
+    handlers = {
+      function(config)
+        require("mason-nvim-dap").default_setup(config)
+      end,
+      -- adapter and launch config live in user/dap.lua
+      codelldb = function() end,
+    },
   }
-
-  require("mason-tool-installer").setup {
-    ensure_installed = lsp_ensure_installed,
-    run_on_start = true,
-  }
-
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "MasonToolsStartingInstall",
-    callback = function()
-      vim.schedule(function()
-        print "mason-tool-installer is starting"
-      end)
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "MasonToolsUpdateCompleted",
-    callback = function(e)
-      vim.schedule(function()
-        print(vim.inspect(e.data)) -- print the table that lists the programs that were installed
-      end)
-    end,
-  })
 end
 
 return M
