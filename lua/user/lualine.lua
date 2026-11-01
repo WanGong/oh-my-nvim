@@ -62,7 +62,8 @@ function M.config()
   }
 
   local spaces = function()
-    return "spaces: " .. vim.api.nvim_buf_get_option(0, "shiftwidth")
+    -- shiftwidth() resolves 'shiftwidth'=0 (set by vim-sleuth) to the effective 'tabstop'
+    return "spaces: " .. vim.fn.shiftwidth()
   end
   lualine.setup {
     options = {
