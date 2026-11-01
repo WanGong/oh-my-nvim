@@ -128,17 +128,22 @@ end
 
 -- Install required Python packages
 local function install_packages()
+  -- language server, linting and formatting come from mason (pyright, ruff, isort)
   local packages = {
     "pynvim",           -- Neovim Python client
     "debugpy",          -- Python debugger
-    "black",            -- Python formatter
-    "isort",            -- Import sorter
-    "flake8",           -- Linter
-    "mypy",             -- Type checker
-    "pylsp-mypy",       -- MyPy plugin for Python LSP
-    "python-lsp-server[all]", -- Python Language Server
+    "setuptools",       -- builds LeaderF's C extension (see user/leaderf.lua)
   }
-  
+
+  -- checking each package with `uv pip show` costs ~80ms of startup, so only re-check when the list changes
+  local stamp_path = venv_path .. "/.nvim-packages"
+  local wanted = table.concat(packages, "\n")
+  if vim.fn.filereadable(stamp_path) == 1 and table.concat(vim.fn.readfile(stamp_path), "\n") == wanted then
+    log("DEBUG", "Python packages unchanged since last check, skipping")
+    return
+  end
+
+  local all_ok = true
   log("INFO", "Checking and installing Python packages...")
   for _, package in ipairs(packages) do
     if is_package_installed(package) then
@@ -152,11 +157,16 @@ local function install_packages()
       if success then
         log("INFO", "Successfully installed " .. package)
       else
+        all_ok = false
         log("ERROR", "Failed to install " .. package .. ": " .. output)
       end
     end
   end
-  
+
+  if all_ok then
+    vim.fn.writefile(vim.split(wanted, "\n"), stamp_path)
+  end
+
   log("INFO", "Python packages installation completed")
 end
 
@@ -190,6 +200,11 @@ function M.setup(user_config)
   -- Set Python provider for Neovim
   if vim.fn.filereadable(python_path) == 1 then
     vim.g.python3_host_prog = python_path
+    -- appended, not prepended, so the venv's python doesn't shadow the user's in :terminal
+    local venv_bin = venv_path .. "/bin"
+    if not vim.tbl_contains(vim.split(vim.env.PATH, ":"), venv_bin) then
+      vim.env.PATH = vim.env.PATH .. ":" .. venv_bin
+    end
     log("INFO", "Python environment setup completed. Python path: " .. python_path)
   else
     log("WARN", "Python executable not found at " .. python_path)
