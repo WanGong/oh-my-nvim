@@ -4,26 +4,6 @@ local M = {
   event = "BufReadPre",
 }
 
-M.opts = {
-  char = "▏",
-  show_trailing_blankline_indent = false,
-  show_first_indent_level = true,
-  use_treesitter = true,
-  show_current_context = true,
-  buftype_exclude = { "terminal", "nofile" },
-  filetype_exclude = {
-    "NvimTree",
-    "Trouble",
-    "dashboard",
-    "help",
-    "lazy",
-    "neogitstatus",
-    "packer",
-    "startify",
-    "text",
-  },
-}
-
 function M.config()
   local highlight = {
     "RainbowRed",
@@ -48,7 +28,14 @@ function M.config()
     vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
   end)
 
-  require("ibl").setup { indent = { highlight = highlight } }
+  require("ibl").setup {
+    indent = { char = "▏", highlight = highlight },
+    scope = { enabled = true },
+    exclude = {
+      buftypes = { "terminal", "nofile" },
+      filetypes = { "NvimTree", "Trouble", "trouble", "alpha", "dashboard", "help", "lazy", "mason", "neogitstatus", "text" },
+    },
+  }
 end
 
 return M
