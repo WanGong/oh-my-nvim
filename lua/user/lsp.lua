@@ -23,79 +23,72 @@
 local M = {
   "neovim/nvim-lspconfig",
   lazy = false,
-  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     {
-      "hrsh7th/cmp-nvim-lsp",
+      "saghen/blink.cmp",
     },
     {
-      "folke/neodev.nvim",
+      "folke/lazydev.nvim",
+      ft = "lua",
+      opts = {
+        library = {
+          { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        },
+      },
     },
   },
 }
 
 M.toggle_inlay_hints = function()
   local bufnr = vim.api.nvim_get_current_buf()
-  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(bufnr), {bufnr})
+  vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }, { bufnr = bufnr })
 end
 
 function M.config()
-  local cmp_nvim_lsp = require "cmp_nvim_lsp"
-
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  capabilities = cmp_nvim_lsp.default_capabilities(M.capabilities)
-
   local function lsp_keymaps(bufnr)
-    local opts = { noremap = true, silent = true }
-    local keymap = vim.api.nvim_buf_set_keymap
-    keymap(bufnr, "n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-    keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-    keymap(bufnr, "n", "gI", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
-    keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-    keymap(bufnr, "n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-    keymap(bufnr, "n", "<leader>li", "<cmd>LspInfo<cr>", opts)
-    keymap(bufnr, "n", "<leader>lI", "<cmd>Mason<cr>", opts)
-    keymap(bufnr, "n", "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-    keymap(bufnr, "n", "<leader>lj", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", opts)
-    keymap(bufnr, "n", "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", opts)
-    keymap(bufnr, "n", "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-    keymap(bufnr, "n", "<leader>ls", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-    keymap(bufnr, "n", "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-  end
-
-  local lspconfig = require "lspconfig"
-  local icons = require "settings.icons"
-
-  local on_attach = function(client, bufnr)
-    lsp_keymaps(bufnr)
-    require("illuminate").on_attach(client)
-
-    if client.supports_method "textDocument/inlayHint" then
-      vim.lsp.inlay_hint.enable(true, {bufnr})
+    local function map(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
     end
+    map("gD", vim.lsp.buf.declaration, "Goto declaration")
+    map("gd", vim.lsp.buf.definition, "Goto definition")
+    map("K", function() vim.lsp.buf.hover() end, "Hover")
+    map("gI", vim.lsp.buf.implementation, "Goto implementation")
+    map("gr", vim.lsp.buf.references, "References")
+    map("gl", vim.diagnostic.open_float, "Line diagnostics")
+    map("<leader>li", "<cmd>LspInfo<cr>", "LSP info")
+    map("<leader>lI", "<cmd>Mason<cr>", "Mason")
+    map("<leader>la", vim.lsp.buf.code_action, "Code action")
+    map("<leader>lj", function() vim.diagnostic.jump { count = 1, float = true } end, "Next diagnostic")
+    map("<leader>lk", function() vim.diagnostic.jump { count = -1, float = true } end, "Prev diagnostic")
+    map("<leader>lr", vim.lsp.buf.rename, "Rename")
+    map("<leader>ls", function() vim.lsp.buf.signature_help() end, "Signature help")
+    map("<leader>lq", vim.diagnostic.setloclist, "Diagnostics to loclist")
+    map("<leader>lh", M.toggle_inlay_hints, "Toggle inlay hints")
   end
+
+  -- LspAttach instead of a per-server on_attach so servers enabled by mason-lspconfig get the keymaps too
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("user_lsp_attach", { clear = true }),
+    callback = function(args)
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      lsp_keymaps(args.buf)
+      if client and client:supports_method("textDocument/inlayHint", args.buf) then
+        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+      end
+    end,
+  })
+
+  vim.lsp.config("*", { capabilities = require("blink.cmp").get_lsp_capabilities() })
 
   local servers = require "user.lspsettings.enabled_servers"
-  for _, server in pairs(servers) do
-    Opts = {
-      on_attach = on_attach,
-      capabilities = capabilities,
-    }
-
+  for _, server in ipairs(servers) do
     server = vim.split(server, "@")[1]
 
     local require_ok, conf_opts = pcall(require, "user.lspsettings." .. server)
     if require_ok then
-      Opts = vim.tbl_deep_extend("force", conf_opts, Opts)
+      vim.lsp.config(server, conf_opts)
     end
-
-    if server == "lua_ls" then
-      require("neodev").setup {}
-    end
-
-    lspconfig[server].setup(Opts)
+    vim.lsp.enable(server)
   end
 
   local config = {
@@ -117,7 +110,7 @@ function M.config()
       focusable = false,
       style = "minimal",
       border = "rounded",
-      source = "always",
+      source = true,
       header = "",
       prefix = "",
       suffix = "",
@@ -126,15 +119,15 @@ function M.config()
 
   vim.diagnostic.config(config)
 
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-    border = "rounded",
-  })
+  local hover = vim.lsp.buf.hover
+  vim.lsp.buf.hover = function(opts)
+    return hover(vim.tbl_extend("keep", opts or {}, { border = "rounded" }))
+  end
 
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-    border = "rounded",
-  })
-
-  require("lspconfig.ui.windows").default_options.border = "rounded"
+  local signature_help = vim.lsp.buf.signature_help
+  vim.lsp.buf.signature_help = function(opts)
+    return signature_help(vim.tbl_extend("keep", opts or {}, { border = "rounded" }))
+  end
 end
 
 return M
