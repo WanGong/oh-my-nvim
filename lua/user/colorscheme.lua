@@ -4,12 +4,10 @@ local M = {
   priority = 1000, -- make sure to load this before all the other start plugins
 }
 
-M.name = "tokyonight-night"
+-- not `M.name`: lazy.nvim reads `name` as the plugin's install directory name
+M.colorscheme = "tokyonight-night"
 function M.config()
-  local status_ok, _ = pcall(vim.cmd.colorscheme, M.name)
-  if not status_ok then
-    return
-  end
+  pcall(vim.cmd.colorscheme, M.colorscheme)
 end
 
 return M
