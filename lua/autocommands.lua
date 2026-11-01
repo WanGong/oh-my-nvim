@@ -17,14 +17,11 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     "spectre_panel",
     "lir",
     "DressingSelect",
-    "tsplayground",
-    "",
+    "checkhealth",
   },
-  callback = function()
-    vim.cmd [[
-      nnoremap <silent> <buffer> q :close<CR>
-      set nobuflisted
-    ]]
+  callback = function(args)
+    vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = args.buf, silent = true })
+    vim.bo[args.buf].buflisted = false
   end,
 })
 
@@ -52,42 +49,36 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 
 vim.api.nvim_create_autocmd({ "TextYankPost" }, {
   callback = function()
-    vim.highlight.on_yank { higroup = "Visual", timeout = 200 }
+    vim.hl.on_yank { higroup = "Visual", timeout = 200 }
   end,
 })
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   pattern = { "*.java" },
-  callback = function()
-    vim.lsp.codelens.refresh()
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-  callback = function()
-    vim.cmd "hi link illuminatedWord LspReferenceText"
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
-  callback = function()
-    local line_count = vim.api.nvim_buf_line_count(0)
-    if line_count >= 5000 then
-      vim.cmd "IlluminatePauseBuf"
-    end
+  callback = function(args)
+    vim.lsp.codelens.refresh { bufnr = args.buf }
   end,
 })
 
 -- https://www.reddit.com/r/vim/comments/ex1vlv/how_do_i_get_vim_to_preserve_the_cursor_position/?rdt=47940
+-- "curdir" (on by default) would make loadview override the project root that project.nvim sets
+vim.opt.viewoptions = { "folds", "cursor" }
 vim.cmd "autocmd BufLeave,BufWinLeave * silent! mkview"
 vim.cmd "autocmd BufReadPost * silent! loadview"
 
-vim.cmd "autocmd BufNewFile,BufRead *.JenkinsFile,*.jenkinsFile,*.Jenkinsfile,*.jenkinsfile,Jenkinsfile.* set syntax=groovy"
+vim.filetype.add {
+  pattern = {
+    [".*%.[jJ]enkins[fF]ile"] = "groovy",
+    ["Jenkinsfile%..*"] = "groovy",
+  },
+}
 
-vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "FocusGained" }, {
   pattern = { "*" },
   callback = function()
-    vim.cmd "checktime"
+    if vim.fn.getcmdwintype() == "" then
+      vim.cmd "checktime"
+    end
   end,
 })
 
