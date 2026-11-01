@@ -96,28 +96,19 @@ function M.config()
       end,
     },
   }
-  vim.cmd [[
-  augroup terminal_setup | au!
-  autocmd TermOpen * nnoremap <buffer><LeftRelease> <LeftRelease>i
-  autocmd TermEnter * startinsert!
-  augroup end
-  ]]
-
-  vim.api.nvim_create_autocmd({ "TermEnter" }, {
-    pattern = { "*" },
-    callback = function()
-      vim.cmd "startinsert"
-      _G.set_terminal_keymaps()
+  local group = vim.api.nvim_create_augroup("terminal_setup", { clear = true })
+  vim.api.nvim_create_autocmd("TermOpen", {
+    group = group,
+    callback = function(args)
+      local opts = { buffer = args.buf, silent = true }
+      vim.keymap.set("n", "<LeftRelease>", "<LeftRelease>i", opts)
+      vim.keymap.set("t", "<m-h>", [[<C-\><C-n><C-W>h]], opts)
+      vim.keymap.set("t", "<m-j>", [[<C-\><C-n><C-W>j]], opts)
+      vim.keymap.set("t", "<m-k>", [[<C-\><C-n><C-W>k]], opts)
+      vim.keymap.set("t", "<m-l>", [[<C-\><C-n><C-W>l]], opts)
     end,
   })
-
-  local opts = { noremap = true, silent = true }
-  function _G.set_terminal_keymaps()
-    vim.api.nvim_buf_set_keymap(0, "t", "<m-h>", [[<C-\><C-n><C-W>h]], opts)
-    vim.api.nvim_buf_set_keymap(0, "t", "<m-j>", [[<C-\><C-n><C-W>j]], opts)
-    vim.api.nvim_buf_set_keymap(0, "t", "<m-k>", [[<C-\><C-n><C-W>k]], opts)
-    vim.api.nvim_buf_set_keymap(0, "t", "<m-l>", [[<C-\><C-n><C-W>l]], opts)
-  end
+  vim.api.nvim_create_autocmd("TermEnter", { group = group, command = "startinsert!" })
 end
 
 return M
