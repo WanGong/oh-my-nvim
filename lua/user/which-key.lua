@@ -2,7 +2,7 @@ local M = {
   "folke/which-key.nvim",
   dependencies = {
     {
-      "echasnovski/mini.icons",
+      "nvim-mini/mini.icons",
       event = "VeryLazy",
     },
   },
@@ -37,14 +37,9 @@ function M.config()
     show_help = false,
     show_keys = false,
     disable = {
-      buftypes = {},
-      filetypes = { "TelescopePrompt" },
+      bt = {},
+      ft = { "TelescopePrompt" },
     },
-  }
-
-  local opts = {
-    mode = "n", -- NORMAL mode
-    prefix = "<leader>",
   }
 
   local mappings = {
@@ -66,9 +61,15 @@ function M.config()
     -- { "<leader>q", "<cmd>confirm q<CR>", desc = "Quit" },
     -- { "<leader>t", group = "Test" },
     { "<leader>v", "<cmd>vsplit<CR>", desc = "Split" },
+    { "<leader>d", group = "Debug / Diagnostics" },
+    { "<leader>f", group = "LeaderF" },
+    { "<leader>g", group = "Git" },
+    { "<leader>l", group = "LSP" },
+    { "<leader>s", group = "Search (Telescope)" },
+    { "<leader>t", group = "Test / Tab" },
   }
 
-  which_key.add(mappings, opts)
+  which_key.add(mappings)
 end
 
 return M
