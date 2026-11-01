@@ -2,31 +2,28 @@ local M = {
   "nvim-neotest/neotest",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
-    -- general tests
-    "vim-test/vim-test",
-    "nvim-neotest/neotest-vim-test",
+    -- general tests: neotest-vim-test can't reach vim-test from neotest's subprocess, so
+    -- vim-test is used directly through its commands for languages without an adapter
+    { "vim-test/vim-test", cmd = { "TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit" } },
     -- language specific tests
     "marilari88/neotest-vitest",
     "nvim-neotest/neotest-python",
     "nvim-neotest/neotest-plenary",
-    "rouge8/neotest-rust",
     "lawrence-laz/neotest-zig",
     "rcasia/neotest-bash",
     "nvim-neotest/nvim-nio",
     "nvim-lua/plenary.nvim",
-    "antoinemadec/FixCursorHold.nvim",
+  },
+  keys = {
+    { "<leader>tt", "<cmd>lua require'neotest'.run.run()<cr>", desc = "Test Nearest" },
+    { "<leader>tf", "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", desc = "Test File" },
+    { "<leader>td", "<cmd>lua require('neotest').run.run({strategy = 'dap'})<cr>", desc = "Debug Test" },
+    { "<leader>ts", "<cmd>lua require('neotest').run.stop()<cr>", desc = "Test Stop" },
+    { "<leader>ta", "<cmd>lua require('neotest').run.attach()<cr>", desc = "Attach Test" },
   },
 }
 
 function M.config()
-  local wk = require "which-key"
-  wk.register {
-    ["<leader>tt"] = { "<cmd>lua require'neotest'.run.run()<cr>", "Test Nearest" },
-    ["<leader>tf"] = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "Test File" },
-    ["<leader>td"] = { "<cmd>lua require('neotest').run.run({strategy = 'dap'})<cr>", "Debug Test" },
-    ["<leader>ts"] = { "<cmd>lua require('neotest').run.stop()<cr>", "Test Stop" },
-    ["<leader>ta"] = { "<cmd>lua require('neotest').run.attach()<cr>", "Attach Test" },
-  }
 
   ---@diagnostic disable: missing-fields
   require("neotest").setup {
@@ -37,9 +34,7 @@ function M.config()
       require "neotest-vitest",
       require "neotest-zig",
       require "neotest-plenary",
-      require "neotest-vim-test" {
-        ignore_file_types = { "python", "vim", "lua", "javascript", "typescript" },
-      },
+      require "neotest-bash",
     },
   }
 end
