@@ -1,23 +1,21 @@
 local M = {
-  "neogitorg/neogit",
-  event = "VeryLazy",
+  "NeogitOrg/neogit",
+  cmd = "Neogit",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "sindrets/diffview.nvim",
+  },
 }
 
 function M.config()
   local icons = require "settings.icons"
-  -- local wk = require "which-key"
-  -- wk.register {
-  --   ["<leader>gg"] = { "<cmd>Neogit<CR>", "Neogit" },
-  -- }
 
   require("neogit").setup {
     auto_refresh = true,
-    disable_builtin_notifications = false,
-    use_magit_keybindings = false,
     -- Change the default way of opening neogit
     kind = "tab",
-    -- Change the default way of opening the commit popup
-    commit_popup = {
+    -- Change the default way of opening the commit message editor
+    commit_editor = {
       kind = "split",
     },
     -- Change the default way of opening popups
