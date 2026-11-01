@@ -3,11 +3,17 @@ local M = {
   event = { "BufReadPre", "BufAdd", "BufNew", "BufReadPost" },
   dependencies = {
     {
-      "famiu/bufdelete.nvim",
+      "nvim-mini/mini.bufremove",
     },
   },
 }
 function M.config()
+  local bufremove = require "mini.bufremove"
+  bufremove.setup {}
+  vim.api.nvim_create_user_command("Bdelete", function(args)
+    bufremove.delete(tonumber(args.args) or 0, args.bang)
+  end, { bang = true, nargs = "?", desc = "Delete buffer keeping the window layout" })
+
   require("bufferline").setup {
     options = {
       close_command = "Bdelete! %d",       -- can be a string | function, see "Mouse actions"
@@ -85,7 +91,7 @@ function M.config()
         bg = { attribute = "bg", highlight = "Normal" },
       },
       indicator_selected = {
-        fg = { attribute = "fg", highlight = "LspDiagnosticsDefaultHint" },
+        fg = { attribute = "fg", highlight = "DiagnosticHint" },
         bg = { attribute = "bg", highlight = "Normal" },
       },
     },
