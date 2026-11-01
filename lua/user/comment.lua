@@ -1,32 +1,23 @@
+-- Commenting is built into Nvim (`gc`/`gcc`, see :h commenting); this only makes it
+-- treesitter-aware for embedded languages (e.g. JSX, Vue, markdown code blocks).
 local M = {
-  "numToStr/Comment.nvim",
-  lazy = false,
-  dependencies = {
-    {
-      "JoosepAlviste/nvim-ts-context-commentstring",
-      event = "VeryLazy",
-    },
-  },
+  "JoosepAlviste/nvim-ts-context-commentstring",
+  event = { "BufReadPost", "BufNewFile" },
 }
 
 function M.config()
-  local wk = require "which-key"
-  -- wk.register {
-  --   ["<leader>/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
-  -- }
-  -- wk.register {
-  --   ["<leader>/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment", mode = "v" },
-  -- }
-
   vim.g.skip_ts_context_commentstring_module = true
-  ---@diagnostic disable: missing-fields
+  ---@diagnostic disable-next-line: missing-fields
   require("ts_context_commentstring").setup {
     enable_autocmd = false,
   }
 
-  require("Comment").setup {
-    pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-  }
+  local get_option = vim.filetype.get_option
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.filetype.get_option = function(filetype, option)
+    return option == "commentstring" and require("ts_context_commentstring.internal").calculate_commentstring()
+      or get_option(filetype, option)
+  end
 end
 
 return M
