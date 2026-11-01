@@ -1,6 +1,6 @@
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system {
+if not vim.uv.fs_stat(lazypath) then
+  local out = vim.fn.system {
     "git",
     "clone",
     "--filter=blob:none",
@@ -8,6 +8,10 @@ if not vim.loop.fs_stat(lazypath) then
     "--branch=stable", -- latest stable release
     lazypath,
   }
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({ { "Failed to clone lazy.nvim:\n", "ErrorMsg" }, { out } }, true, {})
+    return
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -16,13 +20,16 @@ vim.g.mapleader = " " -- make sure to set `mapleader` before lazy so your mappin
 
 -- load lazy
 require("lazy").setup("user", {
-  install = { colorscheme = { require("user.colorscheme").name } },
-  defaults = { lazy = true},
-  ui = { wrap = "true" },
+  install = { colorscheme = { require("user.colorscheme").colorscheme } },
+  defaults = { lazy = true },
+  ui = { wrap = true },
   change_detection = { enabled = true },
   debug = false,
+  rocks = { enabled = false },
   performance = {
     rtp = {
+      -- lazy.nvim picks <prefix>/lib64/nvim whenever lib64 exists, which drops the bundled parsers in <prefix>/lib/nvim
+      paths = { vim.fn.fnamemodify(vim.v.progpath, ":p:h:h") .. "/lib/nvim" },
       disabled_plugins = {
         -- "gzip", -- Plugin for editing compressed files.
         -- "matchit", -- What is it?
