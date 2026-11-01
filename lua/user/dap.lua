@@ -1,6 +1,10 @@
 local M = {
   "mfussenegger/nvim-dap",
   event = "VeryLazy",
+  dependencies = {
+    -- sets up the python adapter via mason-nvim-dap
+    "mason-org/mason.nvim",
+  },
 }
 
 function M.config()
@@ -40,26 +44,16 @@ function M.config()
       type = "codelldb",
       request = "launch",
       program = function()
-        local path
-        vim.ui.input({ prompt = "Path to executable: ", default = vim.loop.cwd() .. "/build/" }, function(input)
-          path = input
-        end)
-        vim.cmd [[redraw]]
-        return path
+        -- vim.fn.input, not vim.ui.input: dap needs the value returned synchronously
+        local path = vim.fn.input("Path to executable: ", vim.uv.cwd() .. "/build/", "file")
+        return path ~= "" and path or dap.ABORT
       end,
       cwd = "${workspaceFolder}",
       stopOnEntry = false,
     },
   }
+  dap.configurations.cpp = dap.configurations.c
+  dap.configurations.rust = dap.configurations.c
 end
-
-M = {
-  "ravenxrz/DAPInstall.nvim",
-  commit = "8798b4c36d33723e7bba6ed6e2c202f84bb300de",
-  config = function()
-    require("dap_install").setup {}
-    require("dap_install").config("python", {})
-  end,
-}
 
 return M
