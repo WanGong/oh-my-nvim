@@ -26,14 +26,21 @@ vim.g.have_nerd_font = true
 -- clear highlights on search when pressing <Esc> in normal mode
 -- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Nvim 0.11 default LSP maps (gra/grn/grr/gri/grt) make the buffer-local `gr` wait for
+-- another key since 'timeout' is off; their actions are already on <leader>l*
+for _, lhs in ipairs { "gra", "grn", "grr", "gri", "grt" } do
+  pcall(vim.keymap.del, "n", lhs)
+end
+pcall(vim.keymap.del, "x", "gra")
+
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump { count = -1, float = true } end, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump { count = 1, float = true } end, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>df', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- show full path
-keymap("n", "C-g", ":echo expand('%:p')<cr>", opts)
+keymap("n", "<C-g>", ":echo expand('%:p')<cr>", opts)
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -97,11 +104,11 @@ keymap("v", ">", ">gv", opts)
 keymap("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gg", "<cmd>Neogit<CR>", opts)
 
--- Comment
-keymap("n", "<leader>cc", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
-keymap("x", "<leader>cc", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
+-- Comment (built-in `gc`, see :h commenting)
+keymap("n", "<leader>cc", "gcc", { remap = true, silent = true, desc = "Toggle comment" })
+keymap("x", "<leader>cc", "gc", { remap = true, silent = true, desc = "Toggle comment" })
 
 -- DAP
 keymap("n", "<leader>db", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", opts)
@@ -114,10 +121,8 @@ keymap("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<cr>", opts)
 keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
 
--- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
-keymap("n", "ff", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
-keymap("n", "<C-f>", ":ClangdSwitchSourceHeader <cr>", opts)
+-- Lsp (<leader>lf / ff formatting lives in user/conform.lua)
+keymap("n", "<C-f>", "<cmd>LspClangdSwitchSourceHeader<cr>", opts)
 
 -- buffers
 keymap("n", "<leader>o", ":only<cr>", opts)
@@ -126,7 +131,8 @@ keymap("n", "<leader>q", ":q!<cr>", opts)
 keymap("n", "<leader>x", ":x!<cr>", opts)
 keymap("n", "<leader>-", ":sp<cr>", opts)
 keymap("n", "<leader><Bslash>", ":vs<cr>", opts)
-keymap("n", "<leader>t", ":tabedit<cr>", opts)
+-- not plain <leader>t: neotest owns <leader>t*, and with 'timeout' off <leader>t alone waits forever
+keymap("n", "<leader>tn", ":tabedit<cr>", opts)
 
 -- highlights
 keymap("n", "zz", ":%s/\\s\\+$// <CR>", opts)
