@@ -36,7 +36,7 @@ vim.opt.wrap = false                            -- display lines as one long lin
 vim.opt.scrolloff = 8                           -- minimal number of screen lines to keep above and below the cursor
 vim.opt.sidescrolloff = 8                       -- minimal number of screen columns to keep to the left and right of the cursor if wrap is `false`
 vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
-vim.opt.fillchars.eob = " "                     -- show empty lines at the end of a buffer as ` ` {default `~`}
+vim.opt.fillchars:append { eob = " " }          -- show empty lines at the end of a buffer as ` ` {default `~`}
 vim.opt.shortmess:append "c"                    -- hide all the completion messages, e.g. "-- XXX completion (YYY)", "match 1 of 2", "The only match", "Pattern not found"
 vim.opt.whichwrap:append "<,>,[,],h,l"          -- keys allowed to move to the previous/next line when the beginning/end of line is reached
 vim.opt.iskeyword:append "-"                    -- treats words with `-` as single words
@@ -49,6 +49,11 @@ vim.opt.inccommand = 'nosplit'                  -- Preview substitutions live, a
 
 vim.opt.tags = "tags;/"
 vim.opt.spell = true
+
+-- no plugin here is a node/perl/ruby remote plugin; the python3 provider is set up in pyvenv.lua
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 -- LeaderF
 vim.g.Lf_ShortcutF = "<C-P>"
